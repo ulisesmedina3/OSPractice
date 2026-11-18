@@ -70,7 +70,24 @@ double get_cpu_usage_percentage(int cpu_num) {
 }
 
 
+
 int main() {
-  
+  pid_t pid = fork();
+
+  if (pid < 0) {
+    perror("fork");
+    return 1;
+  }
+
+  if (pid == 0) {
+    execl("../cpu_load_gen/build/cpu_load_gen", "cpu_load_gen", NULL);
+    perror("execl");
+    _exit(1);
+  }
+
+  printf("Parent process: CPU load generator launched.\n");
+
+  waitpid(pid, NULL, 0);
+
   return 0;
 }
